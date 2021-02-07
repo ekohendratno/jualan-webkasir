@@ -14,13 +14,13 @@
                                 <div class="form-group">
                                     <label class="col-sm-4 control-label">No. Nota</label>
                                     <div class="col-sm-8">
-                                        <input type='text' name='nomor_nota' class='form-control input-sm' id='nomor_nota' value="<?php echo strtoupper(uniqid()).$this->session->userdata('ap_id_user'); ?>" <?php echo $readonly; ?>>
+                                        <input type='text' name='nomor_nota' class='form-control input-sm' id='nomor_nota' value="<?php echo strtoupper(uniqid()).$this->session->userdata('ap_id_user'); ?>" readonly>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-sm-4 control-label">Tanggal</label>
                                     <div class="col-sm-8">
-                                        <input type='text' name='tanggal' class='form-control input-sm' id='tanggal' value="<?php echo date('Y-m-d H:i:s'); ?>" <?php echo $disabled; ?>>
+                                        <input type='text' name='tanggal' class='form-control input-sm' id='tanggal' value="<?php echo date('Y-m-d H:i:s'); ?>" disabled>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -117,7 +117,8 @@
                                 <div class="form-group">
                                     <label class="col-sm-6 control-label">Bayar (F8)</label>
                                     <div class="col-sm-6">
-                                        <input type='text' name='cash' id='UangCash' class='form-control' onkeypress='return check_int(event)'>
+                                        <input onchange="todesimal(this.value)" onkeyup="todesimal(this.value)" type='text' name='cash' id='UangCash' class='form-control'>
+                                        <input type='hidden' name='cashhide' id='UangCashHide' onchange='return check_int(event)'>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -238,8 +239,7 @@
         $("#TabelTransaksi tbody").find('input[type=text],textarea,select').filter(':visible:first').focus();
     });
 
-    function BarisBaru()
-    {
+    function BarisBaru(){
         var Nomor = $('#TabelTransaksi tbody tr').length + 1;
         var Baris = "<tr>";
         Baris += "<td>"+Nomor+"</td>";
@@ -252,7 +252,7 @@
         Baris += "<input type='hidden' name='harga_satuan[]'>";
         Baris += "<span></span>";
         Baris += "</td>";
-        Baris += "<td><input type='text' class='form-control' id='jumlah_beli' name='jumlah_beli[]' onkeypress='return check_int(event)' disabled></td>";
+        Baris += "<td><input min='1' type='number' class='form-control' id='jumlah_beli' name='jumlah_beli[]' onkeypress='return check_int(event)' disabled></td>";
         Baris += "<td>";
         Baris += "<input type='hidden' name='sub_total[]'>";
         Baris += "<span></span>";
@@ -431,17 +431,17 @@
         HitungTotalBayar();
     });
 
-    $(document).on('keyup', '#jumlah_beli', function(){
+    $(document).on('change', '#jumlah_beli', function(){
         var Indexnya = $(this).parent().parent().index();
         var Harga = $('#TabelTransaksi tbody tr:eq('+Indexnya+') td:nth-child(4) input').val();
         var JumlahBeli = $(this).val();
         var KodeBarang = $('#TabelTransaksi tbody tr:eq('+Indexnya+') td:nth-child(2) input').val();
 
         $.ajax({
-            url: "<?php echo site_url('barang/cek-stok'); ?>",
+            url: "<?php echo site_url('admin/barang/stok'); ?>",
             type: "POST",
             cache: false,
-            data: "kode_barang="+encodeURI(KodeBarang)+"&stok="+JumlahBeli,
+            data: "kode="+encodeURI(KodeBarang)+"&stok="+JumlahBeli,
             dataType:'json',
             success: function(data){
                 if(data.status == 1)
@@ -468,13 +468,14 @@
                     $('#ModalFooter').html("<button type='button' class='btn btn-primary' data-dismiss='modal' autofocus>Ok, Saya Mengerti</button>");
                     $('#ModalGue').modal('show');
 
-                    $('#TabelTransaksi tbody tr:eq('+Indexnya+') td:nth-child(5) input').val('1');
+                    var JumlahBeliBalik = JumlahBeli-1;
+                    $('#TabelTransaksi tbody tr:eq('+Indexnya+') td:nth-child(5) input').val(JumlahBeliBalik);
                 }
             }
         });
     });
 
-    $(document).on('keydown', '#jumlah_beli', function(e){
+    $(document).on('keyup', '#jumlah_beli', function(e){
         var charCode = e.which || e.keyCode;
         if(charCode == 9){
             var Indexnya = $(this).parent().parent().index() + 1;
@@ -488,9 +489,35 @@
         HitungTotalBayar();
     });
 
+
     $(document).on('keyup', '#UangCash', function(){
+        this.value = formatRupiah(this.value, 'Rp. ');
+
+
+        var sharga = this.value;
+        var xharga = sharga.replace(/[^0-9]/g, '');
+        $("#UangCashHide").val(xharga);
+
         HitungTotalKembalian();
     });
+
+
+    function formatRupiah(angka, prefix){
+        var number_string = angka.replace(/[^,\d]/g, '').toString(),
+            split   		= number_string.split(','),
+            sisa     		= split[0].length % 3,
+            rupiah     		= split[0].substr(0, sisa),
+            ribuan     		= split[0].substr(sisa).match(/\d{3}/gi);
+
+        // tambahkan titik jika yang di input sudah menjadi angka ribuan
+        if(ribuan){
+            separator = sisa ? '.' : '';
+            rupiah += separator + ribuan.join('.');
+        }
+
+        rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+        return prefix == undefined ? rupiah : (rupiah ? 'Rp. ' + rupiah : '');
+    }
 
     function HitungTotalBayar()
     {
@@ -512,7 +539,7 @@
 
     function HitungTotalKembalian()
     {
-        var Cash = $('#UangCash').val();
+        var Cash = $('#UangCashHide').val();
         var TotalBayar = $('#TotalBayarHidden').val();
 
         if(parseInt(Cash) >= parseInt(TotalBayar)){
@@ -611,7 +638,7 @@
         FormData += "&grand_total="+$('#TotalBayarHidden').val();
 
         $.ajax({
-            url: "<?php echo site_url('penjualan/transaksi'); ?>",
+            url: "<?php echo site_url('admin/penjualan/transaksi_simpan'); ?>",
             type: "POST",
             cache: false,
             data: FormData,
@@ -620,7 +647,7 @@
                 if(data.status == 1)
                 {
                     alert(data.pesan);
-                    window.location.href="<?php echo site_url('penjualan/transaksi'); ?>";
+                    window.location.href="<?php echo site_url('admin/penjualan/transaksi'); ?>";
                 }
                 else
                 {
@@ -649,18 +676,11 @@
     {
         if($('#TotalBayarHidden').val() > 0)
         {
-            if($('#UangCash').val() !== '')
+            if($('#UangCashHide').val() !== '')
             {
-                var FormData = "nomor_nota="+encodeURI($('#nomor_nota').val());
-                FormData += "&tanggal="+encodeURI($('#tanggal').val());
-                FormData += "&id_kasir="+$('#id_kasir').val();
-                FormData += "&id_pelanggan="+$('#id_pelanggan').val();
-                FormData += "&" + $('#TabelTransaksi tbody input').serialize();
-                FormData += "&cash="+$('#UangCash').val();
-                FormData += "&catatan="+encodeURI($('#catatan').val());
-                FormData += "&grand_total="+$('#TotalBayarHidden').val();
+                var FormData = "nomor="+encodeURI($('#nomor_nota').val());
 
-                window.open("<?php echo site_url('penjualan/transaksi-cetak/?'); ?>" + FormData,'_blank');
+                window.open("<?php echo site_url('admin/penjualan/transaksi_cetak/?'); ?>" + FormData,'_blank');
             }
             else
             {

@@ -157,6 +157,20 @@ class Barang extends CI_Controller{
     }
 
 
+    function stok(){
+        $kode = $this->input->post('kode');
+        $stok = $this->input->post('stok');
+
+        $query = $this->db->select('*')->from('barang')->where('barang_kode',$kode)->get();
+
+        if($stok > $query->row()->barang_stok){
+            echo json_encode(array('status' => 0, 'pesan' => "Stok untuk <b>".$query->row()->barang_nama."</b> saat ini hanya tersisa <b>".$query->row()->barang_stok."</b> !"));
+        }
+        else
+        {
+            echo json_encode(array('status' => 1));
+        }
+    }
 
 }
 ?>

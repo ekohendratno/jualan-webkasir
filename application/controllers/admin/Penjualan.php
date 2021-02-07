@@ -345,6 +345,13 @@ class Penjualan extends CI_Controller{
         $pdf->Output();
     }
 
+    function transaksi_simpan(){
+
+    }
+
+
+
+
     function barang_kode(){
         $keyword 	= $this->input->post('keyword');
         $registered	= $this->input->post('registered');
