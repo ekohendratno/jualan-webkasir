@@ -26,7 +26,7 @@
                                 <div class="form-group">
                                     <label class="col-sm-4 control-label">Kasir</label>
                                     <div class="col-sm-8">
-                                        <select name='id_kasir' id='id_kasir' class='form-control input-sm' <?php echo $disabled; ?>>
+                                        <select name='id_kasir' id='id_kasir' class='form-control input-sm' disabled>
                                             <option value=''></option>
                                         </select>
                                     </div>

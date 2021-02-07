@@ -346,7 +346,83 @@ class Penjualan extends CI_Controller{
     }
 
     function transaksi_simpan(){
+        if( !empty($_POST['kode_barang'])){
+            $total = 0;
+            foreach($_POST['kode_barang'] as $k){
+                if( ! empty($k)){ $total++; }
+            }
 
+            if($total > 0){
+
+                $nomor_nota 	= $this->input->post('nomor_nota');
+                $tanggal		= $this->input->post('tanggal');
+                $id_kasir		= $this->input->post('id_kasir');
+                $id_pelanggan	= $this->input->post('id_pelanggan');
+                $bayar			= $this->input->post('cash');
+                $grand_total	= $this->input->post('grand_total');
+                $catatan		= $this->clean_tag_input($this->input->post('catatan'));
+
+                if($bayar < $grand_total)
+                {
+                    $this->query_error("Cash Kurang");
+                }
+                else
+                {
+                    $this->load->model('m_penjualan_master');
+                    $master = $this->m_penjualan_master->insert_master($nomor_nota, $tanggal, $id_kasir, $id_pelanggan, $bayar, $grand_total, $catatan);
+                    if($master){
+                        $id_master 	= $this->m_penjualan_master->get_id($nomor_nota)->row()->id_penjualan_m;
+                        $inserted	= 0;
+
+                        $this->load->model('m_penjualan_detail');
+                        $this->load->model('m_barang');
+
+                        $no_array	= 0;
+                        foreach($_POST['kode_barang'] as $k)
+                        {
+                            if( ! empty($k))
+                            {
+                                $kode_barang 	= $_POST['kode_barang'][$no_array];
+                                $jumlah_beli 	= $_POST['jumlah_beli'][$no_array];
+                                $harga_satuan 	= $_POST['harga_satuan'][$no_array];
+                                $sub_total 		= $_POST['sub_total'][$no_array];
+                                $id_barang		= $this->m_barang->get_id($kode_barang)->row()->id_barang;
+
+                                $insert_detail	= $this->m_penjualan_detail->insert_detail($id_master, $id_barang, $jumlah_beli, $harga_satuan, $sub_total);
+                                if($insert_detail)
+                                {
+                                    $this->m_barang->update_stok($id_barang, $jumlah_beli);
+                                    $inserted++;
+                                }
+                            }
+
+                            $no_array++;
+                        }
+
+                        if($inserted > 0)
+                        {
+                            echo json_encode(array('status' => 1, 'pesan' => "Transaksi berhasil disimpan !"));
+                        }
+                        else
+                        {
+                            $this->query_error();
+                        }
+                    }
+                    else
+                    {
+                        $this->query_error();
+                    }
+                }
+            }
+            else
+            {
+                $this->query_error("Harap masukan minimal 1 kode barang !");
+            }
+        }
+        else
+        {
+            $this->query_error("Harap masukan minimal 1 kode barang !");
+        }
     }
 
 
