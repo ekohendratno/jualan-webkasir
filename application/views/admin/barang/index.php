@@ -61,7 +61,7 @@
                         </div>
                         <div class="form-group">
                             <label>Keterangan <span style="color: red">*</span> :</label>
-                            <textarea  class="form-control" placeholder="Masukkan Keterangan" id="barang_marek" name="barang_marek" ></textarea>
+                            <textarea  class="form-control" placeholder="Masukkan Keterangan" id="barang_keterangan" name="barang_keterangan" ></textarea>
                         </div>
                         <div class="form-group">
                             <label>Kategori <span style="color: red">*</span> :</label>
@@ -77,7 +77,7 @@
                         <div class="form-group">
                             <label>Merek <span style="color: red">*</span> :</label>
                             <div class="input-group">
-                                <input class="form-control" type="text" name="barang_marek" id="barang_marek" placeholder="Masukan Merek" value="" />
+                                <input class="form-control" type="text" name="barang_merek" id="barang_merek" placeholder="Masukan Merek" value="" />
                                 <div class="input-group-btn">
                                     <button type="button" class="btn btn-default">
                                         <i class="glyphicon glyphicon-search"></i>
@@ -159,8 +159,14 @@
                 }
             }
         } );
-    });
 
+        $( "#barang_kategori" ).autocomplete({
+            source: "<?php echo site_url('admin/barang/data1/?');?>"
+        });
+        $( "#barang_merek" ).autocomplete({
+            source: "<?php echo site_url('admin/barang/data2/?');?>"
+        });
+    });
 
     function formDialog(id) {
         $('#btn-tambah').show();

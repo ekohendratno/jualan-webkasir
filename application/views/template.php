@@ -164,20 +164,20 @@
 					<li><a href="<?php echo base_url();?>index.php/admin/dashboard"><i class='fa fa-home fa-fw'></i> Dashboard</a></li>
                         <li class="dropdown">
                             <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                                <i class='fa fa-shopping-cart fa-fw'></i> Penjualan <span class="caret"></span></a>
-                            <ul class="dropdown-menu container">
-                                <li><a href="<?php echo base_url();?>index.php/admin/penjualan">Semua Penjualan</a></li>
-                                <li><a href="<?php echo base_url();?>index.php/admin/penjualan/transaksi">Transaksi</a></li>
-                                <li><a href="<?php echo base_url();?>index.php/admin/penjualan/pelanggan">Data Pelanggan</a></li>
-                            </ul>
-                        </li>
-                        <li class="dropdown">
-                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                                 <i class='fa fa-cube fa-fw'></i> Barang <span class="caret"></span></a>
                             <ul class="dropdown-menu container">
                                 <li><a href="<?php echo base_url();?>index.php/admin/barang">Semua Barang</a></li>
                                 <li><a href="<?php echo base_url();?>index.php/admin/barang/merek">Daftar Merek</a></li>
                                 <li><a href="<?php echo base_url();?>index.php/admin/barang/kategori">Daftar Kategori</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                <i class='fa fa-shopping-cart fa-fw'></i> Penjualan <span class="caret"></span></a>
+                            <ul class="dropdown-menu container">
+                                <li><a href="<?php echo base_url();?>index.php/admin/penjualan">Semua Penjualan</a></li>
+                                <li><a href="<?php echo base_url();?>index.php/admin/penjualan/transaksi">Transaksi</a></li>
+                                <li><a href="<?php echo base_url();?>index.php/admin/penjualan/pelanggan">Data Pelanggan</a></li>
                             </ul>
                         </li>
                         <li><a href="<?php echo base_url();?>index.php/admin/laporan"><i class='fa fa-file fa-fw'></i> Laporan</a></li>

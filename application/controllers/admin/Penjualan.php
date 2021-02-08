@@ -26,6 +26,14 @@ class Penjualan extends CI_Controller{
 
     function transaksi(){
         $data['title'] = 'Transaksi';
+        $query1 = $this->db->select('*')->from('users')->order_by('user_nama','asc')->get();
+        $data['users'] = array();
+        foreach ($query1->result_array() as $row1){
+            $items = array();
+            $items['username'] = $row1['username'];
+            $items['user_nama'] = $row1['user_nama'];
+            array_push($data['users'],$items);
+        }
 
         $this->template->load('template','admin/penjualan/transaksi',$data);
 
@@ -136,7 +144,10 @@ class Penjualan extends CI_Controller{
         $order_field = $requestData['columns'][$order_index]['data'];
         $order_ascdesc = $requestData['order'][0]['dir'];
 
-        $query = $this->db->select('*')->from('penjualan')->group_by('penjualan_nota')->get();
+        $query = $this->db->select('*')->from('penjualan');
+        $query = $query->join('nota', 'nota.nota_nomor=penjualan.penjualan_nota');
+        $query = $query->order_by('nota_tanggal', 'desc');
+        $query = $query->group_by('penjualan_nota')->get();
 
         $data = array();
         $nomor = 0;
@@ -193,6 +204,72 @@ class Penjualan extends CI_Controller{
 
     }
 
+    public function datax(){
+        $requestData	= $_REQUEST;
+
+        $search = $requestData['search']['value'];
+        $limit = $requestData['length'];
+        $start = $requestData['start'];
+        $order_index = $requestData['order'][0]['column'];
+        $order_field = $requestData['columns'][$order_index]['data'];
+        $order_ascdesc = $requestData['order'][0]['dir'];
+
+        $query = $this->db->select('*')->from('penjualan')->group_by('penjualan_nota')->get();
+
+        $data = array();
+        $nomor = 0;
+        foreach ($query->result_array() as $row){
+            $penjualan_nota = $row['penjualan_nota'];
+
+            $query1 = $this->db->select('*')->from('nota')->where('nota_nomor', $penjualan_nota)->limit(1)->get();
+
+            $nota_tanggal = "";
+            $nota_pelanggan = "";
+            $nota_keterangan = "";
+            $nota_kasir = "";
+            foreach ($query1->result_array() as $row1){
+                $nota_tanggal    = $row1['nota_tanggal'];
+                $nota_pelanggan   = $row1['nota_pelanggan'];
+                $nota_keterangan    = $row1['nota_keterangan'];
+                $nota_kasir    = $row1['nota_kasir'];
+
+            }
+
+            $query2 = $this->db->select('*')->from('penjualan')->where('penjualan_nota', $penjualan_nota)->get();
+            $penjualan_total = 0;
+            foreach ($query2->result_array() as $row2){
+                $penjualan_harga    = (int)$row2['penjualan_harga'];
+                $penjualan_jumlah   = (int)$row2['penjualan_jumlah'];
+
+                $penjualan_total = $penjualan_total + ($penjualan_harga*$penjualan_jumlah);
+            }
+
+            $nestedData = array();
+            $nestedData[]	= $nomor+1;
+            $nestedData[]   = $nota_tanggal;
+            $nestedData[]	= "<a href='".site_url('admin/penjualan/transaksi_detail/'.$penjualan_nota)."' id='LihatDetailTransaksi'><i class='fa fa-file fa-fw'></i> ".$penjualan_nota."</a>";
+            $nestedData[]   = "Rp. ".str_replace(',', '.', number_format($penjualan_total));
+            $nestedData[]   = $nota_pelanggan;
+            $nestedData[]   = $nota_keterangan;
+            $nestedData[]   = $nota_kasir;
+            $nestedData[]	= "<div class='text-center'><a class='btn danger' href='#' onClick='submitHapus(".$penjualan_nota.")'><i class='fa fa-trash'></i></a></div>";
+
+            $data[] = $nestedData;
+            $nomor++;
+        }
+
+
+        //$search, $limit, $start, $order_field, $order_ascdesc
+        $callback = array(
+            'draw'=>$requestData['draw'],
+            'recordsTotal'=>$nomor,
+            'recordsFiltered'=>$nomor,
+            'data'=>$data
+        );
+        header('Content-Type: application/json');
+        echo json_encode($callback);
+
+    }
 
     public function transaksi_cetak(){
         $nomor 	= $this->input->get('nomor');
@@ -359,8 +436,9 @@ class Penjualan extends CI_Controller{
                 $id_kasir		= $this->input->post('id_kasir');
                 $id_pelanggan	= $this->input->post('id_pelanggan');
                 $bayar			= $this->input->post('cash');
+                $bayar_kebali	= $this->input->post('cashback');
                 $grand_total	= $this->input->post('grand_total');
-                $catatan		= $this->clean_tag_input($this->input->post('catatan'));
+                $catatan		= $this->input->post('catatan');
 
                 if($bayar < $grand_total)
                 {
@@ -368,30 +446,55 @@ class Penjualan extends CI_Controller{
                 }
                 else
                 {
-                    $this->load->model('m_penjualan_master');
-                    $master = $this->m_penjualan_master->insert_master($nomor_nota, $tanggal, $id_kasir, $id_pelanggan, $bayar, $grand_total, $catatan);
+                    //insert nota
+                    $baris = array();
+                    $baris['nota_nomor'] = $nomor_nota;
+                    $baris['nota_keterangan'] = $catatan;
+                    $baris['nota_tanggal'] = $tanggal;
+                    $baris['nota_pelanggan'] = $id_pelanggan;
+                    $baris['nota_kasir'] = $id_kasir;
+                    $baris['nota_bayar_total'] = $grand_total;
+                    $baris['nota_bayar'] = $bayar;
+                    $baris['nota_bayar_total'] = $grand_total;
+                    $baris['nota_bayar_kembalian'] = $bayar_kebali;
+
+                    $master = $this->db->insert('nota', $baris);
+
                     if($master){
-                        $id_master 	= $this->m_penjualan_master->get_id($nomor_nota)->row()->id_penjualan_m;
                         $inserted	= 0;
 
-                        $this->load->model('m_penjualan_detail');
-                        $this->load->model('m_barang');
-
+                        //insert barang yang dibeli ke penjualan
                         $no_array	= 0;
-                        foreach($_POST['kode_barang'] as $k)
-                        {
-                            if( ! empty($k))
+                        foreach($_POST['kode_barang'] as $k){
+                            if( !empty($k) )
                             {
                                 $kode_barang 	= $_POST['kode_barang'][$no_array];
                                 $jumlah_beli 	= $_POST['jumlah_beli'][$no_array];
                                 $harga_satuan 	= $_POST['harga_satuan'][$no_array];
                                 $sub_total 		= $_POST['sub_total'][$no_array];
-                                $id_barang		= $this->m_barang->get_id($kode_barang)->row()->id_barang;
 
-                                $insert_detail	= $this->m_penjualan_detail->insert_detail($id_master, $id_barang, $jumlah_beli, $harga_satuan, $sub_total);
+                                //insert penjualan
+                                $baris = array();
+                                $baris['penjualan_nota'] = $nomor_nota;
+                                $baris['penjualan_jumlah'] = $jumlah_beli;
+                                $baris['penjualan_harga'] = $harga_satuan;
+                                $baris['penjualan_barang'] = $kode_barang;
+
+                                $insert_detail = $this->db->insert('penjualan', $baris);
                                 if($insert_detail)
                                 {
-                                    $this->m_barang->update_stok($id_barang, $jumlah_beli);
+                                    $barang_stok = 0;
+                                    $query_barang = $this->db->select('*')->from('barang')->where('barang_kode', $kode_barang)->limit(1)->get();
+                                    foreach ($query_barang->result_array() as $row_barang) {
+                                        $barang_stok = (int) $row_barang['barang_stok'];
+                                    }
+
+                                    $stok_baru = $barang_stok - $jumlah_beli;
+
+                                    //update stok barang
+                                    $this->db->where('kode_barang',$kode_barang);
+                                    $this->db->update('barang',array('barang_stok',$stok_baru));
+
                                     $inserted++;
                                 }
                             }
@@ -423,6 +526,7 @@ class Penjualan extends CI_Controller{
         {
             $this->query_error("Harap masukan minimal 1 kode barang !");
         }
+
     }
 
 

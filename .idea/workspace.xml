@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="990133d7-ae71-44c1-a750-1dcbc7b22a08" name="Default Changelist" comment="" />
+    <list default="true" id="990133d7-ae71-44c1-a750-1dcbc7b22a08" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/controllers/admin/Barang.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/controllers/admin/Barang.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/controllers/admin/Penjualan.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/controllers/admin/Penjualan.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/views/admin/barang/index.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/views/admin/barang/index.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/views/admin/penjualan/transaksi.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/views/admin/penjualan/transaksi.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/views/template.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/views/template.php" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -67,6 +74,7 @@
       <workItem from="1612668709676" duration="15182000" />
       <workItem from="1612695830010" duration="7663000" />
       <workItem from="1612708766107" duration="4143000" />
+      <workItem from="1612777031204" duration="8214000" />
     </task>
     <servers />
   </component>

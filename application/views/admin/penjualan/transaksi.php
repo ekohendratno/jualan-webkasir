@@ -27,7 +27,9 @@
                                     <label class="col-sm-4 control-label">Kasir</label>
                                     <div class="col-sm-8">
                                         <select name='id_kasir' id='id_kasir' class='form-control input-sm' disabled>
-                                            <option value=''></option>
+                                            <?php foreach ($users as $user){?>
+                                            <option value='<?php echo $user['username'];?>'><?php echo $user['user_nama'];?></option>
+                                            <?php }?>
                                         </select>
                                     </div>
                                 </div>
@@ -117,7 +119,7 @@
                                 <div class="form-group">
                                     <label class="col-sm-6 control-label">Bayar (F8)</label>
                                     <div class="col-sm-6">
-                                        <input onchange="todesimal(this.value)" onkeyup="todesimal(this.value)" type='text' name='cash' id='UangCash' class='form-control'>
+                                        <input type='text' name='cash' id='UangCash' class='form-control'>
                                         <input type='hidden' name='cashhide' id='UangCashHide' onchange='return check_int(event)'>
                                     </div>
                                 </div>
@@ -125,6 +127,7 @@
                                     <label class="col-sm-6 control-label">Kembali</label>
                                     <div class="col-sm-6">
                                         <input type='text' id='UangKembali' class='form-control' disabled>
+                                        <input type='hidden' name='cashbackhide' id='UangKembaliHide' onchange='return check_int(event)'>
                                     </div>
                                 </div>
                                 <div class='row'>
@@ -489,7 +492,6 @@
         HitungTotalBayar();
     });
 
-
     $(document).on('keyup', '#UangCash', function(){
         this.value = formatRupiah(this.value, 'Rp. ');
 
@@ -544,8 +546,10 @@
 
         if(parseInt(Cash) >= parseInt(TotalBayar)){
             var Selisih = parseInt(Cash) - parseInt(TotalBayar);
+            $('#UangKembaliHide').val(Selisih);
             $('#UangKembali').val(to_rupiah(Selisih));
         } else {
+            $('#UangKembaliHide').val('');
             $('#UangKembali').val('');
         }
     }
@@ -633,7 +637,8 @@
         FormData += "&id_kasir="+$('#id_kasir').val();
         FormData += "&id_pelanggan="+$('#id_pelanggan').val();
         FormData += "&" + $('#TabelTransaksi tbody input').serialize();
-        FormData += "&cash="+$('#UangCash').val();
+        FormData += "&cash="+$('#UangCashHide').val();
+        FormData += "&cashback="+$('#UangKembaliHide').val();
         FormData += "&catatan="+encodeURI($('#catatan').val());
         FormData += "&grand_total="+$('#TotalBayarHidden').val();
 

@@ -84,6 +84,72 @@ class Barang extends CI_Controller{
 
     }
 
+
+    function data1(){
+        $q = $this->input->get('term');
+
+        $this->db->select('*')->from('barang');
+        $this->db->group_by('barang_kategori');
+
+        //filter data by searched keywords
+        if(!empty($q)){
+            $this->db->like('barang_kategori',$q);
+        }
+        $this->db->order_by('barang_kategori','asc');
+
+        //get records
+        $query = $this->db->get();
+
+        $items = array();
+        foreach($query->result() as $row){
+            $data = array();
+
+
+            $data['label'] = $row->barang_kategori;
+
+
+            array_push($items, $data);
+
+        }
+
+        $this->output->set_header('Content-Type: application/json; charset=utf-8');
+        echo json_encode($items);
+
+    }
+
+
+    function data2(){
+        $q = $this->input->get('term');
+
+        $this->db->select('*')->from('barang');
+        $this->db->group_by('barang_merek');
+
+        //filter data by searched keywords
+        if(!empty($q)){
+            $this->db->like('barang_merek',$q);
+        }
+
+        $this->db->order_by('barang_merek','asc');
+        //get records
+        $query = $this->db->get();
+
+        $items = array();
+        foreach($query->result() as $row){
+            $data = array();
+
+            $data['label'] = $row->barang_merek;
+
+
+            array_push($items, $data);
+
+        }
+
+        $this->output->set_header('Content-Type: application/json; charset=utf-8');
+        echo json_encode($items);
+
+    }
+
+
     public function merek_data(){
         $requestData	= $_REQUEST;
 
