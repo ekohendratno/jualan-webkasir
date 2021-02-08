@@ -6,8 +6,11 @@
       <change beforePath="$PROJECT_DIR$/application/controllers/admin/Barang.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/controllers/admin/Barang.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/application/controllers/admin/Penjualan.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/controllers/admin/Penjualan.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/application/views/admin/barang/index.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/views/admin/barang/index.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/views/admin/barang/kategori.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/views/admin/barang/kategori.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/views/admin/barang/merek.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/views/admin/barang/merek.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/views/admin/penjualan/history.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/views/admin/penjualan/history.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/views/admin/penjualan/pelanggan.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/views/admin/penjualan/pelanggan.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/application/views/admin/penjualan/transaksi.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/views/admin/penjualan/transaksi.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/views/template.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/views/template.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,12 +42,13 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/application/views/admin/barang" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/application/views/admin/laporan" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\www\jualan\application\views\admin\barang" />
+      <recent name="C:\www\jualan\application\views\admin\laporan" />
       <recent name="C:\www\jualan\application\controllers\admin" />
+      <recent name="C:\www\jualan\application\views\admin\barang" />
       <recent name="C:\www\jualan\application\views\admin\penjualan" />
     </key>
   </component>
@@ -74,7 +78,7 @@
       <workItem from="1612668709676" duration="15182000" />
       <workItem from="1612695830010" duration="7663000" />
       <workItem from="1612708766107" duration="4143000" />
-      <workItem from="1612777031204" duration="8214000" />
+      <workItem from="1612777031204" duration="17033000" />
     </task>
     <servers />
   </component>
@@ -86,10 +90,10 @@
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="245" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1366.728@0.0.1366.728" timestamp="1612626346722" />
-    <state x="517" y="288" key="NewPhpFileDialog" timestamp="1612673487455">
+    <state x="517" y="288" key="NewPhpFileDialog" timestamp="1612801423266">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state x="517" y="288" key="NewPhpFileDialog/0.0.1366.728@0.0.1366.728" timestamp="1612673487455" />
+    <state x="517" y="288" key="NewPhpFileDialog/0.0.1366.728@0.0.1366.728" timestamp="1612801423266" />
     <state x="339" y="162" key="run.anything.popup" timestamp="1612712172251">
       <screen x="0" y="0" width="1366" height="728" />
     </state>

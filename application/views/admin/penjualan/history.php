@@ -56,7 +56,7 @@
             "iDisplayLength": 10,
             "aLengthMenu": [[10, 20, 50, 100, 150], [10, 20, 50, 100, 150]],
             "ajax":{
-                url :"<?php echo site_url('admin/penjualan/data'); ?>",
+                url :"<?php echo site_url('admin/penjualan/history_data'); ?>",
                 type: "post",
                 error: function(){
                     $(".my-grid-error").html("");

@@ -16,7 +16,7 @@ class Barang extends CI_Controller{
 
 
     function index(){
-        $data['title'] = 'Barang';
+        $data['title'] = 'Semua Barang';
 
         $this->template->load('template','admin/barang/index',$data);
 
@@ -84,6 +84,48 @@ class Barang extends CI_Controller{
 
     }
 
+    public function simpan(){
+
+        $barang_kode 	= $this->input->post('barang_kode');
+        $barang_nama		= $this->input->post('barang_nama');
+        $barang_berat		= $this->input->post('barang_berat');
+        $barang_stok	= $this->input->post('barang_stok');
+        $barang_harga			= $this->input->post('barang_harga');
+        $barang_kategori			= $this->input->post('barang_kategori');
+        $barang_merek			= $this->input->post('barang_merek');
+        $barang_keterangan			= $this->input->post('barang_keterangan');
+        $barang_tanggal_masuk			= $this->input->post('barang_tanggal_masuk');
+
+        if(empty($barang_kode))
+        {
+            $this->query_error("Kode Barang Kosong");
+        }
+        else
+        {
+            //insert nota
+            $baris = array();
+            $baris['barang_kode'] = $barang_kode;
+            $baris['barang_nama'] = $barang_nama;
+            $baris['barang_berat'] = $barang_berat;
+            $baris['barang_stok'] = $barang_stok;
+            $baris['barang_harga'] = $barang_harga;
+            $baris['barang_kategori'] = $barang_kategori;
+            $baris['barang_merek'] = $barang_merek;
+            $baris['barang_keterangan'] = $barang_keterangan;
+            $baris['barang_tanggal_masuk'] = $barang_tanggal_masuk;
+
+            $master = $this->db->insert('barang', $baris);
+
+            if($master){
+                echo json_encode(array('status' => 1, 'pesan' => "Barang berhasil disimpan !"));
+            }
+            else
+            {
+                $this->query_error();
+            }
+        }
+
+    }
 
     function data1(){
         $q = $this->input->get('term');
@@ -117,7 +159,6 @@ class Barang extends CI_Controller{
 
     }
 
-
     function data2(){
         $q = $this->input->get('term');
 
@@ -149,6 +190,36 @@ class Barang extends CI_Controller{
 
     }
 
+    function data3(){
+        $q = $this->input->get('term');
+
+        $this->db->select('*')->from('barang');
+        $this->db->group_by('barang_kode');
+
+        //filter data by searched keywords
+        if(!empty($q)){
+            $this->db->like('barang_kode',$q);
+        }
+
+        $this->db->order_by('barang_kode','asc');
+        //get records
+        $query = $this->db->get();
+
+        $items = array();
+        foreach($query->result() as $row){
+            $data = array();
+
+            $data['label'] = $row->barang_kode;
+
+
+            array_push($items, $data);
+
+        }
+
+        $this->output->set_header('Content-Type: application/json; charset=utf-8');
+        echo json_encode($items);
+
+    }
 
     public function merek_data(){
         $requestData	= $_REQUEST;
@@ -160,16 +231,17 @@ class Barang extends CI_Controller{
         $order_field = $requestData['columns'][$order_index]['data'];
         $order_ascdesc = $requestData['order'][0]['dir'];
 
-        $x = json_decode($this->m->getpengaturan('Merek'));
+        $this->db->select('*')->from('barang');
+        $this->db->group_by('barang_merek');
+        $this->db->order_by('barang_merek','asc');
+        $query = $this->db->get();
 
         $data = array();
         $total = 0;
-        foreach ($x as $k){
+        foreach($query->result() as $row){
             $nestedData = array();
             $nestedData[]	= $total+1;
-            $nestedData[]   = $k;
-            $nestedData[]	= "<div class='text-center'><a class='btn success' href='#formDialog' data-toggle='modal' onClick='formDialog(".$k.")'><i class='fa fa-pen'></i></a> <a class='btn danger' href='#' onClick='submitHapus(".$k.")'><i class='fa fa-trash'></i></a></div>";
-
+            $nestedData[]   = $row->barang_merek;
             $data[] = $nestedData;
             $total++;
         }
@@ -196,16 +268,17 @@ class Barang extends CI_Controller{
         $order_field = $requestData['columns'][$order_index]['data'];
         $order_ascdesc = $requestData['order'][0]['dir'];
 
-        $x = json_decode($this->m->getpengaturan('Kategori'));
+        $this->db->select('*')->from('barang');
+        $this->db->group_by('barang_kategori');
+        $this->db->order_by('barang_kategori','asc');
+        $query = $this->db->get();
 
         $data = array();
         $total = 0;
-        foreach ($x as $k){
+        foreach($query->result() as $row){
             $nestedData = array();
             $nestedData[]	= $total+1;
-            $nestedData[]   = $k;
-            $nestedData[]	= "<div class='text-center'><a class='btn success' href='#formDialog' data-toggle='modal' onClick='formDialog(".$k.")'><i class='fa fa-pen'></i></a> <a class='btn danger' href='#' onClick='submitHapus(".$k.")'><i class='fa fa-trash'></i></a></div>";
-
+            $nestedData[]   = $row->barang_kategori;
             $data[] = $nestedData;
             $total++;
         }
@@ -222,8 +295,7 @@ class Barang extends CI_Controller{
 
     }
 
-
-    function stok(){
+    public function stok(){
         $kode = $this->input->post('kode');
         $stok = $this->input->post('stok');
 
@@ -238,5 +310,40 @@ class Barang extends CI_Controller{
         }
     }
 
+    public function kode(){
+        $keyword 	= $this->input->post('keyword');
+        $registered	= $this->input->post('registered');
+
+
+        $this->db->select('*')->from('barang');
+        if(!empty($keyword)){
+            $this->db->like("barang_kode",$keyword);
+        }
+
+        $query3 = $this->db->get();
+
+        if($query3->num_rows() > 0)
+        {
+            $json['status'] 	= 1;
+            $json['datanya'] 	= "<ul id='daftar-autocomplete'>";
+            foreach($query3->result() as $row3){
+                $json['datanya'] .= "
+						<li>
+							<b>Kode</b> : 
+							<span id='kodenya'>".$row3->barang_kode."</span> <br />
+							<span id='barangnya'>".$row3->barang_nama."</span>
+							<span id='harganya' style='display:none;'>".$row3->barang_harga."</span>
+						</li>
+					";
+            }
+            $json['datanya'] .= "</ul>";
+        }
+        else
+        {
+            $json['status'] 	= 0;
+        }
+
+        echo json_encode($json);
+    }
 }
 ?>

@@ -2,7 +2,7 @@
     <div class="panel panel-default">
         <div class="panel-body">
             <h5><i class='fa fa-cube fa-fw'></i> Barang <i class='fa fa-angle-right fa-fw'></i> Semua Barang
-            <a href='#formDialog' data-toggle='modal' onClick='formDialog(0)' class='btn btn-success btn-sm pull-right panel-title-button'><i class='fa fa-plus fa-fw'></i> Tambah Data</a></h5>
+            <a href='#formDialog' data-toggle='modal' onClick='formDialog(0)' class='btn btn-success btn-sm pull-right panel-title-button'><i class='fa fa-plus fa-fw'></i> Tambah Barang</a></h5>
             <hr />
 
             <div class='table-responsive'>
@@ -13,7 +13,7 @@
                         <th>Kode</th>
                         <th>Nama Barang</th>
                         <th>Kategori</th>
-                        <th>Berat</th>
+                        <th>Berat (gr)</th>
                         <th>Merek</th>
                         <th>Stok</th>
                         <th>Harga</th>
@@ -106,7 +106,7 @@
                         </div>
                         <div class="form-group">
                             <label>Tanggal Barang Masuk <span style="color: red">*</span> :</label>
-                            <input class="form-control" id="barang_nama" type="date" name="barang_nama" value="<?php echo date("Y-m-d");?>"  />
+                            <input class="form-control" id="barang_tanggal_masuk" type="date" name="barang_tanggal_masuk" value="<?php echo date("Y-m-d");?>"  />
                         </div>
 
                     </div>
@@ -166,6 +166,9 @@
         $( "#barang_merek" ).autocomplete({
             source: "<?php echo site_url('admin/barang/data2/?');?>"
         });
+        $( "#barang_kode" ).autocomplete({
+            source: "<?php echo site_url('admin/barang/data3/?');?>"
+        });
     });
 
     function formDialog(id) {
@@ -177,6 +180,44 @@
         }
 
     }
+
+
+    function submitTambah(){
+        var FormData = "barang_kode="+$('#barang_kode').val();
+        FormData += "&barang_nama="+$('#barang_nama').val();
+        FormData += "&barang_berat="+$('#barang_berat').val();
+        FormData += "&barang_stok="+$('#barang_stok').val();
+        FormData += "&barang_harga="+$('#barang_harga').val();
+        FormData += "&barang_kategori="+$('#barang_kategori').val();
+        FormData += "&barang_merek="+$('#barang_merek').val();
+        FormData += "&barang_keterangan="+$('#barang_keterangan').val();
+        FormData += "&barang_tanggal_masuk="+$('#barang_tanggal_masuk').val();
+
+        $.ajax({
+            url: "<?php echo site_url('admin/barang/simpan'); ?>",
+            type: "POST",
+            cache: false,
+            data: FormData,
+            dataType:'json',
+            success: function(data){
+                if(data.status == 1)
+                {
+                    alert(data.pesan);
+                    window.location.href="<?php echo site_url('admin/barang'); ?>";
+                }
+                else
+                {
+                    $('.modal-dialog').removeClass('modal-lg');
+                    $('.modal-dialog').addClass('modal-sm');
+                    $('#ModalHeader').html('Oops !');
+                    $('#ModalContent').html(data.pesan);
+                    $('#ModalFooter').html("<button type='button' class='btn btn-primary' data-dismiss='modal' autofocus>Ok</button>");
+                    $('#ModalGue').modal('show');
+                }
+            }
+        });
+    }
+
 
     function submitEdit(id) {
 

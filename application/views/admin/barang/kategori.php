@@ -11,7 +11,6 @@
                     <tr>
                         <th>#</th>
                         <th>Kategori</th>
-                        <th style="width: 10%" class="no-sort text-center"><i class='fa fa-cog fa-fw'></i></th>
                     </tr>
                     </thead>
                 </table>

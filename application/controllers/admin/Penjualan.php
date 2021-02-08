@@ -16,7 +16,7 @@ class Penjualan extends CI_Controller{
 
 
     function index(){
-        $data['title'] = 'Transaksi';
+        $data['title'] = 'Semua Penjualan';
 
         $this->template->load('template','admin/penjualan/history',$data);
 
@@ -24,7 +24,7 @@ class Penjualan extends CI_Controller{
 
 
 
-    function transaksi(){
+    public function transaksi(){
         $data['title'] = 'Transaksi';
         $query1 = $this->db->select('*')->from('users')->order_by('user_nama','asc')->get();
         $data['users'] = array();
@@ -39,7 +39,7 @@ class Penjualan extends CI_Controller{
 
     }
 
-    function transaksi_detail($id_penjualan){
+    public function transaksi_detail($id_penjualan){
         $data['title'] = 'Transaksi Detail';
         $data['detail'] = array();
         $data['master'] = array();
@@ -50,8 +50,8 @@ class Penjualan extends CI_Controller{
         $nota_keterangan = "";
         $nota_kasir = "";
         $nota_nomor = "";
-        $nota_bayar_total = 0;
         $nota_bayar = 0;
+        $nota_bayar_total = 0;
         $nota_bayar_kembalian = 0;
 
         $query1 = $this->db->select('*')->from('nota')->where('nota_nomor', $id_penjualan)->limit(1)->get();
@@ -126,15 +126,121 @@ class Penjualan extends CI_Controller{
         $this->load->view('admin/penjualan/transaksi_detail', $data);
     }
 
-    function pelanggan(){
-        $data['title'] = 'History';
+    public function pelanggan(){
+        $data['title'] = 'Pelanggan';
 
         $this->template->load('template','admin/penjualan/pelanggan',$data);
 
     }
 
+    public function pelanggan_data(){
+        $requestData	= $_REQUEST;
 
-    public function data(){
+        $search = $requestData['search']['value'];
+        $limit = $requestData['length'];
+        $start = $requestData['start'];
+        $order_index = $requestData['order'][0]['column'];
+        $order_field = $requestData['columns'][$order_index]['data'];
+        $order_ascdesc = $requestData['order'][0]['dir'];
+
+        $this->db->select('*')->from('pelanggan');
+        $this->db->order_by('pelanggan_nama','asc');
+        $query = $this->db->get();
+
+        $data = array();
+        $total = 0;
+        foreach($query->result() as $row){
+            $nestedData = array();
+            $nestedData[]	= $total+1;
+            $nestedData[]   = $row->pelanggan_nama;
+            $nestedData[]   = $row->pelanggan_namalengkap;
+            $nestedData[]   = $row->pelanggan_notelp;
+            $nestedData[]   = $row->pelanggan_alamat;
+            $nestedData[]   = $row->pelanggan_lainnya;
+            $nestedData[]	= "<div class='text-center'><a class='btn success' href='#formDialog' data-toggle='modal' onClick='formDialog(".$row->pelanggan_id.")'><i class='fa fa-pen'></i></a> <a class='btn danger' href='#' onClick='submitHapus(".$row->pelanggan_id.")'><i class='fa fa-trash'></i></a></div>";
+            $data[] = $nestedData;
+            $total++;
+        }
+
+        //$search, $limit, $start, $order_field, $order_ascdesc
+        $callback = array(
+            'draw'=>$requestData['draw'],
+            'recordsTotal'=>$total,
+            'recordsFiltered'=>$total,
+            'data'=>$data
+        );
+        header('Content-Type: application/json');
+        echo json_encode($callback);
+
+    }
+
+    public function pelanggan_simpan(){
+
+        $pelanggan_nama 	= $this->input->post('pelanggan_nama');
+        $pelanggan_namalengkap		= $this->input->post('pelanggan_namalengkap');
+        $pelanggan_notelp		= $this->input->post('pelanggan_notelp');
+        $pelanggan_alamat	= $this->input->post('pelanggan_alamat');
+        $pelanggan_lainnya			= $this->input->post('pelanggan_lainnya');
+
+        if(empty($pelanggan_nama))
+        {
+            $this->query_error("ID Pelanggan Kosong");
+        }
+        else
+        {
+            //insert nota
+            $baris = array();
+            $baris['pelanggan_nama'] = $pelanggan_nama;
+            $baris['pelanggan_namalengkap'] = $pelanggan_namalengkap;
+            $baris['pelanggan_notelp'] = $pelanggan_notelp;
+            $baris['pelanggan_alamat'] = $pelanggan_alamat;
+            $baris['pelanggan_lainnya'] = $pelanggan_lainnya;
+
+            $master = $this->db->insert('pelanggan', $baris);
+
+            if($master){
+                echo json_encode(array('status' => 1, 'pesan' => "Pelanggan berhasil disimpan !"));
+            }
+            else
+            {
+                $this->query_error();
+            }
+        }
+
+    }
+
+    public function pelanggan_nama(){
+        $q = $this->input->get('term');
+
+        $this->db->select('*')->from('pelanggan');
+        $this->db->group_by('pelanggan_nama');
+
+        //filter data by searched keywords
+        if(!empty($q)){
+            $this->db->like('pelanggan_nama',$q);
+        }
+
+        $this->db->order_by('pelanggan_nama','asc');
+        //get records
+        $query = $this->db->get();
+
+        $items = array();
+        foreach($query->result() as $row){
+            $data = array();
+
+            $data['label'] = $row->pelanggan_nama;
+
+
+            array_push($items, $data);
+
+        }
+
+        $this->output->set_header('Content-Type: application/json; charset=utf-8');
+        echo json_encode($items);
+
+    }
+
+    public function history_data(){
         $requestData	= $_REQUEST;
 
         $search = $requestData['search']['value'];
@@ -148,73 +254,6 @@ class Penjualan extends CI_Controller{
         $query = $query->join('nota', 'nota.nota_nomor=penjualan.penjualan_nota');
         $query = $query->order_by('nota_tanggal', 'desc');
         $query = $query->group_by('penjualan_nota')->get();
-
-        $data = array();
-        $nomor = 0;
-        foreach ($query->result_array() as $row){
-            $penjualan_nota = $row['penjualan_nota'];
-
-            $query1 = $this->db->select('*')->from('nota')->where('nota_nomor', $penjualan_nota)->limit(1)->get();
-
-            $nota_tanggal = "";
-            $nota_pelanggan = "";
-            $nota_keterangan = "";
-            $nota_kasir = "";
-            foreach ($query1->result_array() as $row1){
-                $nota_tanggal    = $row1['nota_tanggal'];
-                $nota_pelanggan   = $row1['nota_pelanggan'];
-                $nota_keterangan    = $row1['nota_keterangan'];
-                $nota_kasir    = $row1['nota_kasir'];
-
-            }
-
-            $query2 = $this->db->select('*')->from('penjualan')->where('penjualan_nota', $penjualan_nota)->get();
-            $penjualan_total = 0;
-            foreach ($query2->result_array() as $row2){
-                $penjualan_harga    = (int)$row2['penjualan_harga'];
-                $penjualan_jumlah   = (int)$row2['penjualan_jumlah'];
-
-                $penjualan_total = $penjualan_total + ($penjualan_harga*$penjualan_jumlah);
-            }
-
-            $nestedData = array();
-            $nestedData[]	= $nomor+1;
-            $nestedData[]   = $nota_tanggal;
-            $nestedData[]	= "<a href='".site_url('admin/penjualan/transaksi_detail/'.$penjualan_nota)."' id='LihatDetailTransaksi'><i class='fa fa-file fa-fw'></i> ".$penjualan_nota."</a>";
-            $nestedData[]   = "Rp. ".str_replace(',', '.', number_format($penjualan_total));
-            $nestedData[]   = $nota_pelanggan;
-            $nestedData[]   = $nota_keterangan;
-            $nestedData[]   = $nota_kasir;
-            $nestedData[]	= "<div class='text-center'><a class='btn danger' href='#' onClick='submitHapus(".$penjualan_nota.")'><i class='fa fa-trash'></i></a></div>";
-
-            $data[] = $nestedData;
-            $nomor++;
-        }
-
-
-        //$search, $limit, $start, $order_field, $order_ascdesc
-        $callback = array(
-            'draw'=>$requestData['draw'],
-            'recordsTotal'=>$nomor,
-            'recordsFiltered'=>$nomor,
-            'data'=>$data
-        );
-        header('Content-Type: application/json');
-        echo json_encode($callback);
-
-    }
-
-    public function datax(){
-        $requestData	= $_REQUEST;
-
-        $search = $requestData['search']['value'];
-        $limit = $requestData['length'];
-        $start = $requestData['start'];
-        $order_index = $requestData['order'][0]['column'];
-        $order_field = $requestData['columns'][$order_index]['data'];
-        $order_ascdesc = $requestData['order'][0]['dir'];
-
-        $query = $this->db->select('*')->from('penjualan')->group_by('penjualan_nota')->get();
 
         $data = array();
         $nomor = 0;
@@ -422,7 +461,7 @@ class Penjualan extends CI_Controller{
         $pdf->Output();
     }
 
-    function transaksi_simpan(){
+    public function transaksi_simpan(){
         if( !empty($_POST['kode_barang'])){
             $total = 0;
             foreach($_POST['kode_barang'] as $k){
@@ -481,8 +520,7 @@ class Penjualan extends CI_Controller{
                                 $baris['penjualan_barang'] = $kode_barang;
 
                                 $insert_detail = $this->db->insert('penjualan', $baris);
-                                if($insert_detail)
-                                {
+                                if($insert_detail){
                                     $barang_stok = 0;
                                     $query_barang = $this->db->select('*')->from('barang')->where('barang_kode', $kode_barang)->limit(1)->get();
                                     foreach ($query_barang->result_array() as $row_barang) {
@@ -492,7 +530,7 @@ class Penjualan extends CI_Controller{
                                     $stok_baru = $barang_stok - $jumlah_beli;
 
                                     //update stok barang
-                                    $this->db->where('kode_barang',$kode_barang);
+                                    $this->db->where('barang_kode',$kode_barang);
                                     $this->db->update('barang',array('barang_stok',$stok_baru));
 
                                     $inserted++;
@@ -532,40 +570,73 @@ class Penjualan extends CI_Controller{
 
 
 
-    function barang_kode(){
-        $keyword 	= $this->input->post('keyword');
-        $registered	= $this->input->post('registered');
+    /*
+    public function datax(){
+        $requestData	= $_REQUEST;
 
+        $search = $requestData['search']['value'];
+        $limit = $requestData['length'];
+        $start = $requestData['start'];
+        $order_index = $requestData['order'][0]['column'];
+        $order_field = $requestData['columns'][$order_index]['data'];
+        $order_ascdesc = $requestData['order'][0]['dir'];
 
-        $this->db->select('*')->from('barang');
-        if(!empty($keyword)){
-            $this->db->like("barang_kode",$keyword);
-        }
+        $query = $this->db->select('*')->from('penjualan')->group_by('penjualan_nota')->get();
 
-        $query3 = $this->db->get();
+        $data = array();
+        $nomor = 0;
+        foreach ($query->result_array() as $row){
+            $penjualan_nota = $row['penjualan_nota'];
 
-        if($query3->num_rows() > 0)
-        {
-            $json['status'] 	= 1;
-            $json['datanya'] 	= "<ul id='daftar-autocomplete'>";
-            foreach($query3->result() as $row3){
-                $json['datanya'] .= "
-						<li>
-							<b>Kode</b> : 
-							<span id='kodenya'>".$row3->barang_kode."</span> <br />
-							<span id='barangnya'>".$row3->barang_nama."</span>
-							<span id='harganya' style='display:none;'>".$row3->barang_harga."</span>
-						</li>
-					";
+            $query1 = $this->db->select('*')->from('nota')->where('nota_nomor', $penjualan_nota)->limit(1)->get();
+
+            $nota_tanggal = "";
+            $nota_pelanggan = "";
+            $nota_keterangan = "";
+            $nota_kasir = "";
+            foreach ($query1->result_array() as $row1){
+                $nota_tanggal    = $row1['nota_tanggal'];
+                $nota_pelanggan   = $row1['nota_pelanggan'];
+                $nota_keterangan    = $row1['nota_keterangan'];
+                $nota_kasir    = $row1['nota_kasir'];
+
             }
-            $json['datanya'] .= "</ul>";
-        }
-        else
-        {
-            $json['status'] 	= 0;
+
+            $query2 = $this->db->select('*')->from('penjualan')->where('penjualan_nota', $penjualan_nota)->get();
+            $penjualan_total = 0;
+            foreach ($query2->result_array() as $row2){
+                $penjualan_harga    = (int)$row2['penjualan_harga'];
+                $penjualan_jumlah   = (int)$row2['penjualan_jumlah'];
+
+                $penjualan_total = $penjualan_total + ($penjualan_harga*$penjualan_jumlah);
+            }
+
+            $nestedData = array();
+            $nestedData[]	= $nomor+1;
+            $nestedData[]   = $nota_tanggal;
+            $nestedData[]	= "<a href='".site_url('admin/penjualan/transaksi_detail/'.$penjualan_nota)."' id='LihatDetailTransaksi'><i class='fa fa-file fa-fw'></i> ".$penjualan_nota."</a>";
+            $nestedData[]   = "Rp. ".str_replace(',', '.', number_format($penjualan_total));
+            $nestedData[]   = $nota_pelanggan;
+            $nestedData[]   = $nota_keterangan;
+            $nestedData[]   = $nota_kasir;
+            $nestedData[]	= "<div class='text-center'><a class='btn danger' href='#' onClick='submitHapus(".$penjualan_nota.")'><i class='fa fa-trash'></i></a></div>";
+
+            $data[] = $nestedData;
+            $nomor++;
         }
 
-        echo json_encode($json);
-    }
+
+        //$search, $limit, $start, $order_field, $order_ascdesc
+        $callback = array(
+            'draw'=>$requestData['draw'],
+            'recordsTotal'=>$nomor,
+            'recordsFiltered'=>$nomor,
+            'data'=>$data
+        );
+        header('Content-Type: application/json');
+        echo json_encode($callback);
+
+    }*/
+
 }
 ?>

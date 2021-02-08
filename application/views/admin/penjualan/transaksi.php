@@ -306,7 +306,7 @@
         }
 
         $.ajax({
-            url: "<?php echo site_url('admin/penjualan/barang_kode'); ?>",
+            url: "<?php echo site_url('admin/barang/kode'); ?>",
             type: "POST",
             cache: false,
             data:'keyword=' + KataKunci + '&registered=' + Registered,
