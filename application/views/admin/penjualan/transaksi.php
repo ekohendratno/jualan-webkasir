@@ -1,157 +1,155 @@
 
 <div class="container-fluid">
-    <div class="panel panel-default">
-        <a href='<?php echo base_url();?>admin/penjualan' class='btn btn-default btn-sm pull-right panel-title-button'><i class='fa fa-eye fa-fw'></i> Lihat Daftar Transaksi</a>
-        <div class="panel-body">
 
-            <div class='row'>
-                <div class='col-sm-3'>
-                    <div class="panel panel-primary">
-                        <div class="panel-heading">Informasi Nota</div>
-                        <div class="panel-body">
-
-                            <div class="form-horizontal">
-                                <div class="form-group">
-                                    <label class="col-sm-4 control-label">No. Nota</label>
-                                    <div class="col-sm-8">
-                                        <input type='text' name='nomor_nota' class='form-control input-sm' id='nomor_nota' value="<?php echo strtoupper(uniqid()).$this->session->userdata('ap_id_user'); ?>" readonly>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-sm-4 control-label">Tanggal</label>
-                                    <div class="col-sm-8">
-                                        <input type='text' name='tanggal' class='form-control input-sm' id='tanggal' value="<?php echo date('Y-m-d H:i:s'); ?>" disabled>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-sm-4 control-label">Kasir</label>
-                                    <div class="col-sm-8">
-                                        <select name='id_kasir' id='id_kasir' class='form-control input-sm' disabled>
-                                            <?php foreach ($users as $user){?>
-                                            <option value='<?php echo $user['username'];?>'><?php echo $user['user_nama'];?></option>
-                                            <?php }?>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
+    <div class='col-sm-9'>
 
 
+        <div class="panel panel-default">
+            <a href='<?php echo base_url();?>admin/penjualan' class='btn btn-default btn-sm pull-right panel-title-button'><i class='fa fa-eye fa-fw'></i> Lihat Daftar Transaksi</a>
+            <div class="panel-body">
 
+                <h5><i class='fa fa-shopping-cart fa-fw'></i> Penjualan <i class='fa fa-angle-right fa-fw'></i> Transaksi</h5>
+                <hr />
+                <table class='table table-bordered' id='TabelTransaksi'>
+                    <thead>
+                    <tr>
+                        <th style='width:35px;'>#</th>
+                        <th style='width:210px;'>Kode Barang</th>
+                        <th>Nama Barang</th>
+                        <th style='width:120px;'>Harga</th>
+                        <th style='width:75px;'>Qty</th>
+                        <th style='width:125px;'>Sub Total</th>
+                        <th style='width:40px;'></th>
+                    </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
 
-                    <div class="panel panel-primary" id='PelangganArea'>
-                        <div class="panel-heading">Informasi Pelanggan</div>
-                        <div class="panel-body">
+                <div class='TotalBayar'>
+                    <button id='BarisBaru' class='btn btn-default pull-left'><i class='fa fa-plus fa-fw'></i> Baris Baru (F7)</button>
+                    <h2>Total : <span id='TotalBayar'>Rp. 0</span></h2>
+                    <input type="hidden" id='TotalBayarHidden'>
+                </div>
 
-                            <div class="form-group">
-                                <label>Pelanggan</label>
-                                <a href="<?php echo site_url('penjualan/tambah-pelanggan'); ?>" class='pull-right' id='TambahPelanggan'>Tambah Baru ?</a>
-                                <select name='id_pelanggan' id='id_pelanggan' class='form-control input-sm' style='cursor: pointer;'>
-                                    <option value='umum'>-- Umum --</option>
-                                </select>
-                            </div>
+                <div class="col-sm-6">
+                    <div class="row">
 
-                            <div class="form-horizontal">
-                                <div class="form-group">
-                                    <label class="col-sm-4 control-label">Telp / HP</label>
-                                    <div class="col-sm-8">
-                                        <div id='telp_pelanggan'><small><i>Tidak ada</i></small></div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-sm-4 control-label">Alamat</label>
-                                    <div class="col-sm-8">
-                                        <div id='alamat_pelanggan'><small><i>Tidak ada</i></small></div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-sm-4 control-label">Info Lain</label>
-                                    <div class="col-sm-8">
-                                        <div id='info_tambahan_pelanggan'><small><i>Tidak ada</i></small></div>
-                                    </div>
-                                </div>
-                            </div>
+                        <label class="control-label">Catatan Transaksi (Jika Ada)</label>
+                        <textarea name='catatan' id='catatan' class='form-control' rows='2' placeholder="" style='resize: vertical; width:83%;'></textarea>
 
-                        </div>
                     </div>
                 </div>
-                <div class='col-sm-9'>
-                    <h5><i class='fa fa-shopping-cart fa-fw'></i> Penjualan <i class='fa fa-angle-right fa-fw'></i> Transaksi</h5>
-                    <hr />
-                    <table class='table table-bordered' id='TabelTransaksi'>
-                        <thead>
-                        <tr>
-                            <th style='width:35px;'>#</th>
-                            <th style='width:210px;'>Kode Barang</th>
-                            <th>Nama Barang</th>
-                            <th style='width:120px;'>Harga</th>
-                            <th style='width:75px;'>Qty</th>
-                            <th style='width:125px;'>Sub Total</th>
-                            <th style='width:40px;'></th>
-                        </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
+                <div class="col-sm-6">
+                    <div class="row">
 
-                    <div class='alert alert-info TotalBayar'>
-                        <button id='BarisBaru' class='btn btn-default pull-left'><i class='fa fa-plus fa-fw'></i> Baris Baru (F7)</button>
-                        <h2>Total : <span id='TotalBayar'>Rp. 0</span></h2>
-                        <input type="hidden" id='TotalBayarHidden'>
+                        <div class="form-group">
+                            <label class="control-label">Bayar (F8)</label>
+                            <input type='text' name='cash' id='UangCash' class='form-control'>
+                            <input type='hidden' name='cashhide' id='UangCashHide' onchange='return check_int(event)'>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Kembali</label>
+                            <input type='text' id='UangKembali' class='form-control' disabled>
+                            <input type='hidden' name='cashbackhide' id='UangKembaliHide' onchange='return check_int(event)'>
+                        </div>
+                        <div class='text-right'>
+                            <button type='button' class='btn btn-default' id='CetakStruk'>
+                                <i class='fa fa-print'></i> Cetak (F9)
+                            </button>
+                            <button type='button' class='btn btn-success' id='Simpann'>
+                                <i class='fa fa-save'></i> Simpan (F10)
+                            </button>
+                        </div>
+
                     </div>
 
+                </div>
+
+                <div class="col-sm-12">
+
+                    <p><i class='fa fa-keyboard fa-fw'></i> <b>Shortcut Keyboard : </b></p>
                     <div class='row'>
-                        <div class='col-sm-7'>
-                            <textarea name='catatan' id='catatan' class='form-control' rows='2' placeholder="Catatan Transaksi (Jika Ada)" style='resize: vertical; width:83%;'></textarea>
-
-                            <br />
-                            <p><i class='fa fa-keyboard fa-fw'></i> <b>Shortcut Keyboard : </b></p>
-                            <div class='row'>
-                                <div class='col-sm-6'>F7 = Tambah baris baru</div>
-                                <div class='col-sm-6'>F9 = Cetak Struk</div>
-                                <div class='col-sm-6'>F8 = Fokus ke field bayar</div>
-                                <div class='col-sm-6'>F10 = Simpan Transaksi</div>
-                            </div>
-                        </div>
-                        <div class='col-sm-5'>
-                            <div class="form-horizontal">
-                                <div class="form-group">
-                                    <label class="col-sm-6 control-label">Bayar (F8)</label>
-                                    <div class="col-sm-6">
-                                        <input type='text' name='cash' id='UangCash' class='form-control'>
-                                        <input type='hidden' name='cashhide' id='UangCashHide' onchange='return check_int(event)'>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-sm-6 control-label">Kembali</label>
-                                    <div class="col-sm-6">
-                                        <input type='text' id='UangKembali' class='form-control' disabled>
-                                        <input type='hidden' name='cashbackhide' id='UangKembaliHide' onchange='return check_int(event)'>
-                                    </div>
-                                </div>
-                                <div class='row'>
-                                    <div class='col-sm-6' style='padding-right: 0px;'>
-                                        <button type='button' class='btn btn-warning btn-block' id='CetakStruk'>
-                                            <i class='fa fa-print'></i> Cetak (F9)
-                                        </button>
-                                    </div>
-                                    <div class='col-sm-6'>
-                                        <button type='button' class='btn btn-primary btn-block' id='Simpann'>
-                                            <i class='fa fa-save'></i> Simpan (F10)
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <div class='col-sm-6'>F7 = Tambah baris baru</div>
+                        <div class='col-sm-6'>F9 = Cetak Struk</div>
+                        <div class='col-sm-6'>F8 = Fokus ke field bayar</div>
+                        <div class='col-sm-6'>F10 = Simpan Transaksi</div>
                     </div>
-
-                    <br />
                 </div>
-            </div>
 
+
+
+            </div>
         </div>
     </div>
+    <div class='col-sm-3'>
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <h5>Nota</h5>
+                <hr />
+
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">No. Nota</label>
+                        <div class="col-sm-8">
+                            <input type='text' name='nomor_nota' class='form-control input-sm' id='nomor_nota' value="<?php echo strtoupper(uniqid()).$this->session->userdata('ap_id_user'); ?>" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Tanggal</label>
+                        <div class="col-sm-8">
+                            <input type='text' name='tanggal' class='form-control input-sm' id='tanggal' value="<?php echo date('Y-m-d H:i:s'); ?>" disabled>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Kasir</label>
+                        <div class="col-sm-8">
+                            <select name='id_kasir' id='id_kasir' class='form-control input-sm' disabled>
+                                <?php foreach ($users as $user){?>
+                                    <option value='<?php echo $user['username'];?>'><?php echo $user['username'];?></option>
+                                <?php }?>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <br />
+                <h5>Pelanggan</h5>
+                <hr />
+
+                <div class="form-group">
+                    <label>Pelanggan</label>
+                    <a href="<?php echo site_url('penjualan/tambah-pelanggan'); ?>" class='pull-right' id='TambahPelanggan'>Tambah Baru ?</a>
+                    <select name='id_pelanggan' id='id_pelanggan' class='form-control input-sm' style='cursor: pointer;'>
+                        <option value='umum'>-- Umum --</option>
+                    </select>
+                </div>
+
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Telp / HP</label>
+                        <div class="col-sm-8">
+                            <div id='telp_pelanggan'><small><i>Tidak ada</i></small></div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Alamat</label>
+                        <div class="col-sm-8">
+                            <div id='alamat_pelanggan'><small><i>Tidak ada</i></small></div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Info Lain</label>
+                        <div class="col-sm-8">
+                            <div id='info_tambahan_pelanggan'><small><i>Tidak ada</i></small></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
 </div>
 
 <style type="text/css">

@@ -26,12 +26,12 @@ class Penjualan extends CI_Controller{
 
     public function transaksi(){
         $data['title'] = 'Transaksi';
-        $query1 = $this->db->select('*')->from('users')->order_by('user_nama','asc')->get();
         $data['users'] = array();
+
+        $query1 = $this->db->select('*')->from('users')->order_by('username','asc')->get();
         foreach ($query1->result_array() as $row1){
             $items = array();
             $items['username'] = $row1['username'];
-            $items['user_nama'] = $row1['user_nama'];
             array_push($data['users'],$items);
         }
 

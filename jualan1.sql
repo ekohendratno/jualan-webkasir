@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 07 Feb 2021 pada 15.42
--- Versi server: 10.4.16-MariaDB
--- Versi PHP: 7.4.12
+-- Waktu pembuatan: 01 Bulan Mei 2021 pada 00.17
+-- Versi server: 10.4.17-MariaDB
+-- Versi PHP: 7.2.34
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `jualan`
+-- Database: `jualan1`
 --
 
 -- --------------------------------------------------------
