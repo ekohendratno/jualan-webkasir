@@ -12,7 +12,6 @@
                     <tr>
                         <th>#</th>
                         <th>ID Pengguna</th>
-                        <th>Nama Pengguna</th>
                         <th>Level</th>
                         <th>Aktif Terakhir</th>
                         <th style="width: 10%" class="no-sort text-center"><i class='fa fa-cog fa-fw'></i></th>
@@ -56,10 +55,6 @@
                             <label>Password ID Pengguna <span style="color: red">*</span> :</label>
                             <input  class="form-control" placeholder="Masukkan Password" id="password" name="password" maxlength="30" minlength="3" value="" />
                         </div>
-                        <div class="form-group">
-                            <label>Nama Pengguna <span style="color: red">*</span> :</label>
-                            <input  class="form-control" placeholder="Masukkan Nama Lengkap" id="user_nama" name="user_nama" maxlength="30" minlength="3" value="" />
-                        </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
@@ -79,7 +74,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button onclick="submitTambah()" type="button" id="btn-tambah" class="btn btn-primary">Tambah</button> <button onclick="submitEdit()" type="button" id="btn-ubah" class="btn btn-primary">Simpan</button>
+                <button onclick="submitSimpan()" type="button" class="btn btn-primary">Simpan</button>
             </div>
         </div>
     </div>
@@ -132,20 +127,35 @@
     });
 
     function formDialog(id) {
-        $('#btn-tambah').show();
-        $('#btn-ubah').hide();
+        $('#id').val("");
+        $('#username').val("");
+        $('#password').val("");
+        $('#user_level').val("");
+
         if(id > 0){
-            $('#btn-tambah').hide();
-            $('#btn-ubah').show();
+
+            $.ajax({
+                type: "POST",
+                data: 'id='+id,
+                url: "<?php echo site_url('admin/users/ambildatabyid'); ?>",
+                cache: false,
+                dataType:'json',
+                success: function(data){
+                    $('#id').val(id);
+                    $('#username').val(data.username);
+                    $('#password').val(data.password);
+                    $('#user_level').val(data.user_level);
+                }
+            });
         }
 
     }
 
 
-    function submitTambah(){
-        var FormData = "username="+$('#username').val();
+    function submitSimpan(){
+        var FormData = "id="+$('#id').val();
+        FormData += "&username="+$('#username').val();
         FormData += "&password="+$('#password').val();
-        FormData += "&user_nama="+$('#user_nama').val();
         FormData += "&user_level="+$('#user_level').val();
 
         $.ajax({
@@ -175,16 +185,12 @@
 
     }
 
-    function submitEdit(id) {
-
-    }
-
     function submitHapus(id) {
         var tanya = confirm('Apakah yakin mau hapus data?');
         if(tanya){
             $.ajax({
                 type:'POST',
-                data: 'username='+id,
+                data: 'id='+id,
                 url:'<?php echo base_url('admin/users/hapus') ;?>',
                 cache: false,
                 dataType:'json',

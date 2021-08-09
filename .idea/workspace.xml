@@ -3,13 +3,21 @@
   <component name="ChangeListManager">
     <list default="true" id="990133d7-ae71-44c1-a750-1dcbc7b22a08" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/config/database.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/config/database.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/controllers/admin/Laporan.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/controllers/admin/Laporan.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/controllers/Auth.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/controllers/Auth.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/controllers/admin/Barang.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/controllers/admin/Barang.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/controllers/admin/Dashboard.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/controllers/admin/Dashboard.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/application/controllers/admin/Penjualan.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/controllers/admin/Penjualan.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/application/controllers/admin/Users.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/controllers/admin/Users.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/views/admin/penjualan/transaksi.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/views/admin/penjualan/transaksi.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/views/admin/barang/index.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/views/admin/barang/index.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/views/admin/dashboard.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/views/admin/dashboard.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/views/admin/penjualan/pelanggan.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/views/admin/penjualan/pelanggan.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/application/views/admin/users.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/views/admin/users.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jualanv1.0alfa.sql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/views/auth/login.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/views/auth/login.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/views/auth/profile.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/views/auth/profile.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/views/auth/sandi.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/views/auth/sandi.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/views/header.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/views/header.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/views/template.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/views/template.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/img/ppdb.png" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -79,7 +87,14 @@
       <workItem from="1612708766107" duration="4143000" />
       <workItem from="1612777031204" duration="17033000" />
       <workItem from="1612860228565" duration="6608000" />
-      <workItem from="1625924321859" duration="2672000" />
+      <workItem from="1625924321859" duration="2824000" />
+      <workItem from="1628087131614" duration="15000" />
+      <workItem from="1628087148909" duration="1724000" />
+      <workItem from="1628167286173" duration="386000" />
+      <workItem from="1628239451768" duration="170000" />
+      <workItem from="1628357241024" duration="550000" />
+      <workItem from="1628366555332" duration="252000" />
+      <workItem from="1628529719940" duration="8516000" />
     </task>
     <servers />
   </component>
@@ -87,21 +102,13 @@
     <option name="version" value="1" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="245" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1612626346722">
-      <screen x="0" y="0" width="1366" height="728" />
+    <state x="463" y="116" key="FileChooserDialogImpl" timestamp="1628087145132">
+      <screen x="0" y="0" width="1366" height="720" />
     </state>
-    <state x="245" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1366.728@0.0.1366.728" timestamp="1612626346722" />
-    <state x="740" y="276" key="FileChooserDialogImpl" timestamp="1612875898315">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state x="463" y="116" key="FileChooserDialogImpl/0.0.1366.720@0.0.1366.720" timestamp="1628087145132" />
+    <state x="379" y="92" width="737" height="606" key="find.popup" timestamp="1628357750067">
+      <screen x="0" y="0" width="1366" height="720" />
     </state>
-    <state x="740" y="276" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1612875898315" />
-    <state x="517" y="288" key="NewPhpFileDialog" timestamp="1612801423266">
-      <screen x="0" y="0" width="1366" height="728" />
-    </state>
-    <state x="517" y="288" key="NewPhpFileDialog/0.0.1366.728@0.0.1366.728" timestamp="1612801423266" />
-    <state x="339" y="162" key="run.anything.popup" timestamp="1612712172251">
-      <screen x="0" y="0" width="1366" height="728" />
-    </state>
-    <state x="339" y="162" key="run.anything.popup/0.0.1366.728@0.0.1366.728" timestamp="1612712172251" />
+    <state x="379" y="92" width="737" height="606" key="find.popup/0.0.1366.720@0.0.1366.720" timestamp="1628357750067" />
   </component>
 </project>

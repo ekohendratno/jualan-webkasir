@@ -176,6 +176,7 @@ class Penjualan extends CI_Controller{
 
     public function pelanggan_simpan(){
 
+        $id 	= $this->input->post('id');
         $pelanggan_nama 	= $this->input->post('pelanggan_nama');
         $pelanggan_namalengkap		= $this->input->post('pelanggan_namalengkap');
         $pelanggan_notelp		= $this->input->post('pelanggan_notelp');
@@ -184,7 +185,7 @@ class Penjualan extends CI_Controller{
 
         if(empty($pelanggan_nama))
         {
-            $this->query_error("ID Pelanggan Kosong");
+            $this->query_error("Nama Pelanggan Kosong");
         }
         else
         {
@@ -196,7 +197,13 @@ class Penjualan extends CI_Controller{
             $baris['pelanggan_alamat'] = $pelanggan_alamat;
             $baris['pelanggan_lainnya'] = $pelanggan_lainnya;
 
-            $master = $this->db->insert('pelanggan', $baris);
+            if($id > 0){
+                $this->db->where('pelanggan_id', $id);
+                $master = $this->db->update('pelanggan', $baris);
+            }else{
+                $master = $this->db->insert('pelanggan', $baris);
+                $id = $this->db->insert_id();
+            }
 
             if($master){
                 echo json_encode(array('status' => 1, 'pesan' => "Pelanggan berhasil disimpan !"));
@@ -207,6 +214,27 @@ class Penjualan extends CI_Controller{
             }
         }
 
+    }
+
+    public function pelanggan_ambildatabyid(){
+        $id = $this->input->post('id');
+        $users = $this->db->get_where('pelanggan', array('pelanggan_id'=>$id));
+
+
+        $baris = array();
+
+        foreach ($users->result_array() as $row){
+            $baris['pelanggan_id'] = $row['pelanggan_id'];
+            $baris['pelanggan_nama'] = $row['pelanggan_nama'];
+            $baris['pelanggan_namalengkap'] = $row['pelanggan_namalengkap'];
+            $baris['pelanggan_notelp'] = $row['pelanggan_notelp'];
+            $baris['pelanggan_alamat'] = $row['pelanggan_alamat'];
+            $baris['pelanggan_lainnya'] = $row['pelanggan_lainnya'];
+
+        }
+
+        $this->output->set_header('Content-Type: application/json; charset=utf-8');
+        echo json_encode($baris);
     }
 
     public function pelanggan_nama(){
@@ -238,6 +266,34 @@ class Penjualan extends CI_Controller{
         $this->output->set_header('Content-Type: application/json; charset=utf-8');
         echo json_encode($items);
 
+    }
+
+
+    public function pelanggan_hapus()
+    {
+        $level = $this->session->userdata('user_level');
+        if($level !== 'admin')
+        {
+            exit();
+        }
+        else
+        {
+            $id = $this->input->post('id');
+            $this->db->where('pelanggan_id',$id);
+            $hapus = $this->db->delete('pelanggan');
+            if($hapus)
+            {
+                echo json_encode(array(
+                    "pesan" => "<font color='green'><i class='fa fa-check'></i> Data berhasil dihapus !</font>
+					"));
+            }
+            else
+            {
+                echo json_encode(array(
+                    "pesan" => "<font color='red'><i class='fa fa-warning'></i> Terjadi kesalahan, coba lagi !</font>
+					"));
+            }
+        }
     }
 
     public function history_data(){

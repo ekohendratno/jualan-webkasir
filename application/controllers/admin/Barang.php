@@ -86,6 +86,7 @@ class Barang extends CI_Controller{
 
     public function simpan(){
 
+        $id 	= $this->input->post('id');
         $barang_kode 	= $this->input->post('barang_kode');
         $barang_nama		= $this->input->post('barang_nama');
         $barang_berat		= $this->input->post('barang_berat');
@@ -96,12 +97,9 @@ class Barang extends CI_Controller{
         $barang_keterangan			= $this->input->post('barang_keterangan');
         $barang_tanggal_masuk			= $this->input->post('barang_tanggal_masuk');
 
-        if(empty($barang_kode))
-        {
-            $this->query_error("Kode Barang Kosong");
-        }
-        else
-        {
+
+
+        if( !empty($barang_kode) ) {
             //insert nota
             $baris = array();
             $baris['barang_kode'] = $barang_kode;
@@ -114,18 +112,75 @@ class Barang extends CI_Controller{
             $baris['barang_keterangan'] = $barang_keterangan;
             $baris['barang_tanggal_masuk'] = $barang_tanggal_masuk;
 
-            $master = $this->db->insert('barang', $baris);
+            if($id > 0){
+                $this->db->where('barang_id', $id);
+                $master = $this->db->update('barang', $baris);
+            }else{
+                $master = $this->db->insert('barang', $baris);
+                $id = $this->db->insert_id();
+            }
 
             if($master){
-                echo json_encode(array('status' => 1, 'pesan' => "Barang berhasil disimpan !"));
+                $this->output->set_header('Content-Type: application/json; charset=utf-8,Access-Control-Allow-Origin: *');
+                echo json_encode(array('id' => $id,'status' => 1, 'pesan' => "Data berhasil disimpan!"));
             }
             else
             {
-                $this->query_error();
+                echo json_encode(array('status' => 0, 'pesan' => "Gagal disimpan!"));
             }
+
+        }else{
+            echo json_encode(array('status' => 0, 'pesan' => "Kode barang kosong!"));
         }
 
     }
+
+
+    public function ambildatabyid(){
+        $id = $this->input->post('id');
+        $users = $this->db->get_where('barang', array('barang_id'=>$id));
+
+
+        $baris = array();
+
+        foreach ($users->result_array() as $row){
+            $baris['barang_id'] = $row['barang_id'];
+            $baris['barang_kode'] = $row['barang_kode'];
+            $baris['barang_nama'] = $row['barang_nama'];
+            $baris['barang_berat'] = $row['barang_berat'];
+            $baris['barang_stok'] = $row['barang_stok'];
+            $baris['barang_harga'] = $row['barang_harga'];
+            $baris['barang_kategori'] = $row['barang_kategori'];
+            $baris['barang_merek'] = $row['barang_merek'];
+            $baris['barang_keterangan'] = $row['barang_keterangan'];
+            //$baris['barang_dihapus'] = $row['barang_dihapus'];
+
+        }
+
+        $this->output->set_header('Content-Type: application/json; charset=utf-8');
+        echo json_encode($baris);
+    }
+
+
+    public function hapus()
+    {
+        $id = $this->input->post('id');
+        $this->db->where('barang_id',$id);
+        $hapus = $this->db->delete('barang');
+        if($hapus)
+        {
+            echo json_encode(array(
+                "pesan" => "<font color='green'><i class='fa fa-check'></i> Data berhasil dihapus !</font>
+					"));
+        }
+        else
+        {
+            echo json_encode(array(
+                "pesan" => "<font color='red'><i class='fa fa-warning'></i> Terjadi kesalahan, coba lagi !</font>
+					"));
+        }
+    }
+
 
     function data1(){
         $q = $this->input->get('term');

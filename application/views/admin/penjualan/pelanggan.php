@@ -79,7 +79,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button onclick="submitTambah()" type="button" id="btn-tambah" class="btn btn-primary">Tambah</button> <button onclick="submitEdit()" type="button" id="btn-ubah" class="btn btn-primary">Simpan</button>
+                <button onclick="submitSimpan()" type="button" class="btn btn-primary">Simpan</button>
             </div>
         </div>
     </div>
@@ -132,18 +132,38 @@
     });
 
     function formDialog(id) {
-        $('#btn-tambah').show();
-        $('#btn-ubah').hide();
+        $('#id').val("");
+        $('#pelanggan_nama').val("");
+        $('#pelanggan_namalengkap').val("");
+        $('#pelanggan_notelp').val("");
+        $('#pelanggan_alamat').val("");
+        $('#pelanggan_lainnya').val("");
+
         if(id > 0){
-            $('#btn-tambah').hide();
-            $('#btn-ubah').show();
+
+            $.ajax({
+                type: "POST",
+                data: 'id='+id,
+                url: "<?php echo site_url('admin/penjualan/pelanggan_ambildatabyid'); ?>",
+                cache: false,
+                dataType:'json',
+                success: function(data){
+                    $('#id').val(id);
+                    $('#pelanggan_nama').val(data.pelanggan_nama);
+                    $('#pelanggan_namalengkap').val(data.pelanggan_namalengkap);
+                    $('#pelanggan_notelp').val(data.pelanggan_notelp);
+                    $('#pelanggan_alamat').val(data.pelanggan_alamat);
+                    $('#pelanggan_lainnya').val(data.pelanggan_lainnya);
+                }
+            });
         }
 
     }
 
 
-    function submitTambah(){
-        var FormData = "pelanggan_nama="+$('#pelanggan_nama').val();
+    function submitSimpan(){
+        var FormData = "id="+$('#id').val();
+        FormData += "&pelanggan_nama="+$('#pelanggan_nama').val();
         FormData += "&pelanggan_namalengkap="+$('#pelanggan_namalengkap').val();
         FormData += "&pelanggan_notelp="+$('#pelanggan_notelp').val();
         FormData += "&pelanggan_alamat="+$('#pelanggan_alamat').val();
@@ -174,12 +194,23 @@
         });
     }
 
-    function submitEdit(id) {
-
-    }
-
     function submitHapus(id) {
 
+        var tanya = confirm('Apakah yakin mau hapus data?');
+        if(tanya){
+            $.ajax({
+                type:'POST',
+                data: 'id='+id,
+                url:'<?php echo base_url('admin/penjualan/pelanggan_hapus') ;?>',
+                cache: false,
+                dataType:'json',
+                success: function(data){
+                    $('#Notifikasi').html(data.pesan);
+                    $("#Notifikasi").fadeIn('fast').show().delay(3000).fadeOut('fast');
+                    $('#my-grid').DataTable().ajax.reload( null, false );
+                }
+            });
+        }
     }
 
 </script>

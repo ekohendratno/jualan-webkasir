@@ -45,10 +45,9 @@ class Users extends CI_Controller{
             $nestedData = array();
             $nestedData[]	= $total+1;
             $nestedData[]   = $row->username;
-            $nestedData[]   = $row->user_nama;
             $nestedData[]   = $row->user_level;
             $nestedData[]   = $row->user_last_active;
-            $nestedData[]	= "<div class='text-center'><a class='btn success' href='#formDialog' data-toggle='modal' onClick='formDialog(".$row->username.")'><i class='fa fa-pen'></i></a> <a class='btn danger' href='#' onClick='submitHapus(".$row->username.")'><i class='fa fa-trash'></i></a></div>";
+            $nestedData[]	= "<div class='text-center'><a class='btn success' href='#formDialog' data-toggle='modal' onClick='formDialog($row->user_id)'><i class='fa fa-pen'></i></a> <a class='btn danger' href='#' onClick='submitHapus($row->user_id)'><i class='fa fa-trash'></i></a></div>";
             $data[] = $nestedData;
             $total++;
         }
@@ -101,9 +100,9 @@ class Users extends CI_Controller{
 
     public function simpan(){
 
+        $id 	= $this->input->post('id');
         $username 	= $this->input->post('username');
         $password	= $this->input->post('password');
-        $user_nama		= $this->input->post('user_nama');
         $user_level		= $this->input->post('user_level');
 
         if(empty($username))
@@ -116,10 +115,15 @@ class Users extends CI_Controller{
             $baris = array();
             $baris['username'] = $username;
             $baris['password'] = $password;
-            $baris['user_nama'] = $user_nama;
             $baris['user_level'] = $user_level;
 
-            $master = $this->db->insert('users', $baris);
+            if($id > 0){
+                $this->db->where('user_id', $id);
+                $master = $this->db->update('users', $baris);
+            }else{
+                $master = $this->db->insert('users', $baris);
+                $id = $this->db->insert_id();
+            }
 
             if($master){
                 echo json_encode(array('status' => 1, 'pesan' => "Pengguna baru berhasil ditambahkan !"));
@@ -132,6 +136,27 @@ class Users extends CI_Controller{
 
     }
 
+
+    public function ambildatabyid(){
+        $id = $this->input->post('id');
+        $users = $this->db->get_where('users', array('user_id'=>$id));
+
+
+        $baris = array();
+
+        foreach ($users->result_array() as $row){
+            $baris['user_id'] = $row['user_id'];
+            $baris['username'] = $row['username'];
+            $baris['password'] = $row['password'];
+            $baris['user_nama'] = $row['user_nama'];
+            $baris['user_level'] = $row['user_level'];
+
+        }
+
+        $this->output->set_header('Content-Type: application/json; charset=utf-8');
+        echo json_encode($baris);
+    }
+
     public function hapus()
     {
         $level = $this->session->userdata('user_level');
@@ -141,8 +166,8 @@ class Users extends CI_Controller{
         }
         else
         {
-            $id_user = $this->input->post('username');
-            $this->db->where('username',$id_user);
+            $id = $this->input->post('id');
+            $this->db->where('username',$id);
             $hapus = $this->db->delete('users');
             if($hapus)
             {

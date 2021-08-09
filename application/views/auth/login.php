@@ -8,7 +8,7 @@
             var password = $('#password').val();
             $.ajax({
                 type: 'POST',
-                url: '<?php echo base_url(); ?>index.php/auth/signin',
+                url: '<?php echo base_url(); ?>auth/signin',
                 data:'username='+username+'&password='+password,
                 dataType:'json',
                 beforeSend: function () {
@@ -24,10 +24,17 @@
                     $('#loading_ajax').fadeOut("slow");
                     $('.status').html(hasil.pesan);
                     if(hasil.pesan == ''){
-                        window.location.assign("<?php echo base_url();?>index.php/"+hasil.redirect);
+                        window.location.assign("<?php echo base_url();?>"+hasil.redirect);
                     }else{
                         $("input").removeAttr('disabled');
                         $("button").removeAttr('disabled');
+                    }
+                },
+                error: function(jqXHR,error, errorThrown) {
+                    if(jqXHR.status&&jqXHR.status==400){
+                        alert(jqXHR.responseText);
+                    }else{
+                        alert("Something went wrong");
                     }
                 }
             });

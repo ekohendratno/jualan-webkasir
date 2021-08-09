@@ -44,8 +44,8 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="<?php echo base_url();?>" title="PPDB 2020/2021">
-                <img alt="Brand" src="<?php echo base_url();?>img/ppdb.png" style="float: left; margin-top: -5px; padding: 0; height: 30px">
+            <a class="navbar-brand" href="<?php echo base_url();?>">
+                Jualan
             </a>
         </div>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">

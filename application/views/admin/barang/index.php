@@ -114,7 +114,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button onclick="submitTambah()" type="button" id="btn-tambah" class="btn btn-primary">Tambah</button> <button onclick="submitEdit()" type="button" id="btn-ubah" class="btn btn-primary">Simpan</button>
+                <button onclick="submitSimpan()" type="button"  class="btn btn-primary">Simpan</button>
             </div>
         </div>
     </div>
@@ -172,18 +172,44 @@
     });
 
     function formDialog(id) {
-        $('#btn-tambah').show();
-        $('#btn-ubah').hide();
+        $('#id').val("");
+        $('#barang_kode').val("");
+        $('#barang_nama').val("");
+        $('#barang_berat').val("");
+        $('#barang_stok').val("");
+        $('#barang_harga').val("");
+        $('#barang_kategori').val("");
+        $('#barang_merek').val("");
+        $('#barang_keterangan').val("");
+
         if(id > 0){
-            $('#btn-tambah').hide();
-            $('#btn-ubah').show();
+
+            $.ajax({
+                type: "POST",
+                data: 'id='+id,
+                url: "<?php echo site_url('admin/barang/ambildatabyid'); ?>",
+                cache: false,
+                dataType:'json',
+                success: function(data){
+                    $('#id').val(id);
+                    $('#barang_kode').val(data.barang_kode);
+                    $('#barang_nama').val(data.barang_nama);
+                    $('#barang_berat').val(data.barang_berat);
+                    $('#barang_stok').val(data.barang_stok);
+                    $('#barang_harga').val(data.barang_harga);
+                    $('#barang_kategori').val(data.barang_kategori);
+                    $('#barang_merek').val(data.barang_merek);
+                    $('#barang_keterangan').val(data.barang_keterangan);
+                }
+            });
         }
 
     }
 
 
-    function submitTambah(){
-        var FormData = "barang_kode="+$('#barang_kode').val();
+    function submitSimpan(){
+        var FormData = "id="+$('#id').val();
+        FormData += "&barang_kode="+$('#barang_kode').val();
         FormData += "&barang_nama="+$('#barang_nama').val();
         FormData += "&barang_berat="+$('#barang_berat').val();
         FormData += "&barang_stok="+$('#barang_stok').val();
@@ -194,11 +220,16 @@
         FormData += "&barang_tanggal_masuk="+$('#barang_tanggal_masuk').val();
 
         $.ajax({
-            url: "<?php echo site_url('admin/barang/simpan'); ?>",
-            type: "POST",
-            cache: false,
+            type:'POST',
             data: FormData,
+            url:'<?php echo base_url('index.php/admin/barang/simpan') ;?>',
             dataType:'json',
+            beforeSend: function () {
+                $('#loading_ajax').show();
+            },
+            complete: function(){
+                $('#loading_ajax').fadeOut("slow");
+            },
             success: function(data){
                 if(data.status == 1)
                 {
@@ -219,11 +250,21 @@
     }
 
 
-    function submitEdit(id) {
-
-    }
-
     function submitHapus(id) {
-
+        var tanya = confirm('Apakah yakin mau hapus data?');
+        if(tanya){
+            $.ajax({
+                type:'POST',
+                data: 'id='+id,
+                url:'<?php echo base_url('admin/barang/hapus') ;?>',
+                cache: false,
+                dataType:'json',
+                success: function(data){
+                    $('#Notifikasi').html(data.pesan);
+                    $("#Notifikasi").fadeIn('fast').show().delay(3000).fadeOut('fast');
+                    $('#my-grid').DataTable().ajax.reload( null, false );
+                }
+            });
+        }
     }
 </script>

@@ -13,7 +13,7 @@ class Auth extends CI_Controller {
     function index(){		
 		
 		$level = $this->session->userdata('user_level');
-		if ( $level == 'admin' ) redirect('admin/dashboard');
+		if ( $level == 'admin' ) redirect( 'admin/dashboard');
 		else $this->load->view('auth/login');
 		
     }
@@ -47,29 +47,36 @@ class Auth extends CI_Controller {
 		$password = $this->input->post('password');
 			
 		$data = array();
+        $data['pesan'] = '';
 		if(empty($username) || empty($password)){			
 			$data['pesan'] = '<div class="alert alert-danger" role="alert"><strong>Maaf!</strong> Username dan Password kosong!</div>';
-		}else{		
+		}else{
+            try {
+                $this->db->where(array(
+                    'username'=> $username,
+                    'password'=> $password
+                ));
 
-			$this->db->where(array(
-					'username'=> $username,
-					'password'=> $password
-			));
+                $users_data = $this->db->get('users')->row_array();
+                $users_data = $this->getUsersDetail($users_data);
 
-			$users_data = $this->db->get('users')->row_array();
-			$users_data = $this->getUsersDetail($users_data);
+                if ( !empty($users_data) && $users_data['user_level'] == 'admin' ) {
 
-			if ( !empty($users_data) && $users_data['user_level'] == 'admin' ) {
-				
-				$this->session->set_userdata($users_data);
-				$data['pesan'] = '';
-				$data['redirect'] = 'admin/dashboard';
-			}else{
-				$data['pesan'] = '<div class="alert alert-danger" role="alert"><strong>Maaf!</strong> Username dan Password tidak sesuai!</div>';
-				$data['redirect'] = 'auth';
-			}
+                    $this->session->set_userdata($users_data);
+                    $data['pesan'] = '';
+                    $data['redirect'] = 'admin/dashboard';
+                }else{
+                    $data['pesan'] = '<div class="alert alert-danger" role="alert"><strong>Maaf!</strong> Username dan Password tidak sesuai!</div>';
+                    $data['redirect'] = 'auth';
+                }
+
+            }catch (\Exception $e){
+                $data['pesan'] = $e->getMessage();
+                //die($e->getMessage());
+            }
 		}
-		
+
+        $this->output->set_header('Access-Control-Allow-Origin: *');
 		$this->output->set_header('Content-Type: application/json; charset=utf-8');
 		echo json_encode($data);	
 		
@@ -77,7 +84,7 @@ class Auth extends CI_Controller {
 
     function logout() {
         $this->session->sess_destroy();
-        redirect('auth');
+        redirect( base_url() .'auth');
     }
 	
 	

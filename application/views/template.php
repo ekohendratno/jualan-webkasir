@@ -161,27 +161,27 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 				<ul class="nav navbar-nav">			
 					<?php if($this->session->userdata('user_level') == 'admin'){?>
-					<li><a href="<?php echo base_url();?>index.php/admin/dashboard"><i class='fa fa-home fa-fw'></i> Dashboard</a></li>
+					<li><a href="<?php echo base_url();?>admin/dashboard"><i class='fa fa-home fa-fw'></i> Dashboard</a></li>
                         <li class="dropdown">
                             <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                                 <i class='fa fa-cube fa-fw'></i> Barang <span class="caret"></span></a>
                             <ul class="dropdown-menu container">
-                                <li><a href="<?php echo base_url();?>index.php/admin/barang">Semua Barang</a></li>
-                                <li><a href="<?php echo base_url();?>index.php/admin/barang/merek">Daftar Merek</a></li>
-                                <li><a href="<?php echo base_url();?>index.php/admin/barang/kategori">Daftar Kategori</a></li>
+                                <li><a href="<?php echo base_url();?>admin/barang">Semua Barang</a></li>
+                                <li><a href="<?php echo base_url();?>admin/barang/merek">Daftar Merek</a></li>
+                                <li><a href="<?php echo base_url();?>admin/barang/kategori">Daftar Kategori</a></li>
                             </ul>
                         </li>
                         <li class="dropdown">
                             <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                                 <i class='fa fa-shopping-cart fa-fw'></i> Penjualan <span class="caret"></span></a>
                             <ul class="dropdown-menu container">
-                                <li><a href="<?php echo base_url();?>index.php/admin/penjualan">Semua Penjualan</a></li>
-                                <li><a href="<?php echo base_url();?>index.php/admin/penjualan/transaksi">Transaksi</a></li>
-                                <li><a href="<?php echo base_url();?>index.php/admin/penjualan/pelanggan">Data Pelanggan</a></li>
+                                <li><a href="<?php echo base_url();?>admin/penjualan">Semua Penjualan</a></li>
+                                <li><a href="<?php echo base_url();?>admin/penjualan/transaksi">Transaksi</a></li>
+                                <li><a href="<?php echo base_url();?>admin/penjualan/pelanggan">Data Pelanggan</a></li>
                             </ul>
                         </li>
-                        <li><a href="<?php echo base_url();?>index.php/admin/laporan"><i class='fa fa-file fa-fw'></i> Laporan</a></li>
-                        <li><a href="<?php echo base_url();?>index.php/admin/users"><i class='fa fa-user fa-fw'></i> Users</a></li>
+                        <li><a href="<?php echo base_url();?>admin/laporan"><i class='fa fa-file fa-fw'></i> Laporan</a></li>
+                        <li><a href="<?php echo base_url();?>admin/users"><i class='fa fa-user fa-fw'></i> Users</a></li>
 					<?php }?>
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
@@ -191,9 +191,9 @@
 					  		<img src="<?php if( $foto != '' && file_exists('uploads/users/'.$foto) ){ echo base_url('uploads/users/'.$foto); }else{ echo base_url('img/avatar.png');}?>">
 						</div>
 				  	</li>
-					<li><a href="<?php echo base_url().'index.php/auth/profile';?>">Hallo, <?php echo $this->session->userdata('username');?></a></li>
-					<li><a href="<?php echo base_url().'index.php/admin/pengaturan'; ?>" title="Pengaturan"><span class="glyphicon glyphicon-cog"></span></li></a>
-					<li><a href="<?php echo base_url().'index.php/auth/logout'; ?>" title="Logout"><span class="glyphicon glyphicon-off"></span></li></a>
+					<li><a href="<?php echo base_url().'auth/profile';?>">Hallo, <?php echo $this->session->userdata('username');?></a></li>
+					<li><a href="<?php echo base_url().'admin/pengaturan'; ?>" title="Pengaturan"><span class="glyphicon glyphicon-cog"></span></li></a>
+					<li><a href="<?php echo base_url().'auth/logout'; ?>" title="Logout"><span class="glyphicon glyphicon-off"></span></li></a>
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div>

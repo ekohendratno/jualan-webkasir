@@ -133,7 +133,7 @@ glyphicon glyphicon-off" style="color: #FC0004"></span></div></a>
 			$('#submit').submit(function(e){
 				e.preventDefault(); 
 					 $.ajax({
-						 url:'<?php echo base_url();?>index.php/auth/do_upload',
+						 url:'<?php echo base_url();?>auth/do_upload',
 						 type: "POST",
 						 data: new FormData(this),
 						 dataType: 'json',
@@ -147,7 +147,7 @@ glyphicon glyphicon-off" style="color: #FC0004"></span></div></a>
 							 
 							 if(data.ok == 1){
 								 					
-								window.location.assign("<?php echo base_url();?>index.php/auth/profile"); 
+								window.location.assign("<?php echo base_url();?>auth/profile");
 								 
 							 }
 					   }
