@@ -66,12 +66,12 @@ class Laporan extends CI_Controller{
     {
         $penjualan 	= $this->laporan_penjualan($from, $to);
         if($penjualan->num_rows() > 0)
-        {
-            $filename = 'Laporan_Penjualan_'.$from.'_'.$to;
-            header("Content-type: application/x-msdownload");
-            header("Content-Disposition: attachment; filename=".$filename.".xls");
+    {
+        $filename = 'Laporan_Penjualan_'.$from.'_'.$to;
+        header("Content-type: application/x-msdownload");
+        header("Content-Disposition: attachment; filename=".$filename.".xls");
 
-            echo "
+        echo "
 				<h4>Laporan Penjualan Tanggal ".date('d/m/Y', strtotime($from))." - ".date('d/m/Y', strtotime($to))."</h4>
 				<table border='1' width='100%'>
 					<thead>
@@ -84,11 +84,11 @@ class Laporan extends CI_Controller{
 					<tbody>
 			";
 
-            $no = 1;
-            $total_penjualan = 0;
-            foreach($penjualan->result() as $p)
-            {
-                echo "
+        $no = 1;
+        $total_penjualan = 0;
+        foreach($penjualan->result() as $p)
+        {
+            echo "
 					<tr>
 						<td>".$no."</td>
 						<td>".date('d F Y', strtotime($p->nota_tanggal))."</td>
@@ -96,11 +96,11 @@ class Laporan extends CI_Controller{
 					</tr>
 				";
 
-                $total_penjualan = $total_penjualan + $p->total_penjualan;
-                $no++;
-            }
+            $total_penjualan = $total_penjualan + $p->total_penjualan;
+            $no++;
+        }
 
-            echo "
+        echo "
 				<tr>
 					<td colspan='2'><b>Total Seluruh Penjualan</b></td>
 					<td><b>Rp. ".str_replace(",", ".", number_format($total_penjualan))."</b></td>
@@ -108,7 +108,7 @@ class Laporan extends CI_Controller{
 			</tbody>
 			</table>
 			";
-        }
+    }
     }
 
     public function pdf($from, $to)
